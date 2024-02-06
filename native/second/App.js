@@ -9,6 +9,7 @@ import Login from './src/screens/login/Login'
 import Toast from 'react-native-toast-message'
 import { Provider } from 'react-redux'
 import { store } from './src/store/store'
+import Cart from './src/screens/cart/Cart'
 
 const Stack = createNativeStackNavigator()
 
@@ -21,6 +22,7 @@ const App = () => {
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Category" component={Category} />
           <Stack.Screen name="Product" component={Product} />
+          <Stack.Screen name="Cart" component={Cart} />
         </Stack.Navigator>
       </NavigationContainer>
       <Toast/>

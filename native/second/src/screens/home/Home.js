@@ -8,7 +8,7 @@ import { addToCart } from '../../store/features/cartSlice'
 
 
 const Home = ({ navigation }) => {
-  
+
   const cart = useSelector(state => state.cart.value)
   const dispatch = useDispatch()
 
@@ -34,8 +34,8 @@ const Home = ({ navigation }) => {
     }
   }
 
-  const handleAddToCart = () => {
-    dispatch(addToCart())
+  const handleAddToCart = (item) => {
+    dispatch(addToCart(item))
   }
 
 
@@ -48,11 +48,15 @@ const Home = ({ navigation }) => {
           ))
         } */}
       <View style={styles.cartContainer}>
-        <Button title={`${cart}`} onPress={null} style={styles.cartButton} />
+        <Button
+          title={`${cart}`}
+          onPress={() => navigation.navigate('Cart')}
+          style={styles.cartButton} />
       </View>
       <FlatList
         data={products}
-        renderItem={({ item }) => <ProductCartComponent product={item} onPress={handleAddToCart} />}
+        renderItem={({ item }) => <ProductCartComponent product={item}
+         onPress={() => handleAddToCart(item)} />}
         keyExtractor={item => item._id}
       />
       {/* <Button title='Go To Category' onPress={goCategory} color={'indianred'}/> */}
