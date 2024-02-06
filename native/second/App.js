@@ -7,12 +7,14 @@ import Category from './src/screens/category/Category'
 import Product from './src/screens/product/Product'
 import Login from './src/screens/login/Login'
 import Toast from 'react-native-toast-message'
+import { Provider } from 'react-redux'
+import { store } from './src/store/store'
 
 const Stack = createNativeStackNavigator()
 
 const App = () => {
   return (
-    <>
+    <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen name='Home' component={Home} />
@@ -22,7 +24,7 @@ const App = () => {
         </Stack.Navigator>
       </NavigationContainer>
       <Toast/>
-    </>
+    </Provider>
   )
 }
 

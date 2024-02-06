@@ -4,5 +4,12 @@ export const styles = StyleSheet.create({
   container: {
     margin: 20,
     borderColor: 'gray'
+  },
+  cartContainer:{
+    width: 50,
+    display: 'flex',
+  },
+  cartButton:{
+    width: '80',
   }
 })

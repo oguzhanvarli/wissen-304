@@ -1,11 +1,16 @@
-import { View, Text, ScrollView, Image, FlatList } from 'react-native'
+import { View, Text, ScrollView, Image, FlatList, Button } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { styles } from './home.style'
 import ProductCartComponent from '../../components/ProductCartComponent'
+import { useDispatch, useSelector } from 'react-redux'
+import { addToCart } from '../../store/features/cartSlice'
 
 
 const Home = ({ navigation }) => {
+  
+  const cart = useSelector(state => state.cart.value)
+  const dispatch = useDispatch()
 
   const [products, setProducts] = useState([])
   const [counter, setCounter] = useState(0)
@@ -29,22 +34,29 @@ const Home = ({ navigation }) => {
     }
   }
 
+  const handleAddToCart = () => {
+    dispatch(addToCart())
+  }
+
 
 
   return (
-    <>
-        {/* {
+    <View style={styles.container}>
+      {/* {
           products.map((product, key) => (
             <ProductCartComponent key={key} product={product} />
           ))
         } */}
-        <FlatList 
-          data={products}
-          renderItem={({item}) => <ProductCartComponent product={item} />}
-          keyExtractor={item => item._id}
-        />
-        {/* <Button title='Go To Category' onPress={goCategory} color={'indianred'}/> */}
-    </>
+      <View style={styles.cartContainer}>
+        <Button title={`${cart}`} onPress={null} style={styles.cartButton} />
+      </View>
+      <FlatList
+        data={products}
+        renderItem={({ item }) => <ProductCartComponent product={item} onPress={handleAddToCart} />}
+        keyExtractor={item => item._id}
+      />
+      {/* <Button title='Go To Category' onPress={goCategory} color={'indianred'}/> */}
+    </View>
   )
 }
 
