@@ -22,7 +22,7 @@ const Login = ({navigation}) => {
       //   email: email,
       //   password: password
       // }
-      let loginResponse = await axios.post('http://localhost:9000/auth/login', values)
+      let loginResponse = await axios.post('/auth/login', values)
       if(loginResponse.data?.token){
         navigation.navigate('Home')
         Toast.show({

@@ -10,10 +10,12 @@ import Toast from 'react-native-toast-message'
 import { Provider } from 'react-redux'
 import { store } from './src/store/store'
 import Cart from './src/screens/cart/Cart'
+import axios from 'axios'
 
 const Stack = createNativeStackNavigator()
 
 const App = () => {
+  axios.defaults.baseURL = 'http://localhost:9000'
   return (
     <Provider store={store}>
       <NavigationContainer>

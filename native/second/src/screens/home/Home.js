@@ -26,7 +26,7 @@ const Home = ({ navigation }) => {
 
   const getProducts = async () => {
     try {
-      let product = await axios.get('http://localhost:9000/product/getAll')
+      let product = await axios.get('/product/getAll')
       setProducts(product.data.products)
     } catch (error) {
       // console.log('Get All Products Error', error)
@@ -34,8 +34,24 @@ const Home = ({ navigation }) => {
     }
   }
 
-  const handleAddToCart = (item) => {
-    dispatch(addToCart(item))
+  const handleAddToCart = async (item) => {
+    try {
+      let cartObj = {
+        name: item.name,
+        image: item.image,
+        quantity: 1,
+        price: item.price,
+        productId : item._id
+      }
+      console.log(typeof(cartObj.quantity))
+      let response = await axios.post('/cart/addToCart', cartObj)
+      if (response.data.message) {
+        dispatch(addToCart(item))
+      }
+    } catch (error) {
+      console.log('Add to Cart Error', error)
+    }
+
   }
 
 
@@ -56,7 +72,7 @@ const Home = ({ navigation }) => {
       <FlatList
         data={products}
         renderItem={({ item }) => <ProductCartComponent product={item}
-         onPress={() => handleAddToCart(item)} />}
+          onPress={() => handleAddToCart(item)} />}
         keyExtractor={item => item._id}
       />
       {/* <Button title='Go To Category' onPress={goCategory} color={'indianred'}/> */}

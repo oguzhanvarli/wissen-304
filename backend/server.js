@@ -19,6 +19,7 @@ const Category = require('./models/categoryModel')
 const CategoryRouter = require('./router/categoryRouter')
 const ProductRouter = require('./router/productRouter')
 const UserRouter = require('./router/userRouter')
+const CartRouter = require('./router/cartRouter')
 
 //ENV
 require('dotenv').config()
@@ -46,6 +47,7 @@ app.get('/', (req, res) => {
 app.use('/category', CategoryRouter)
 app.use('/product', ProductRouter)
 app.use('/auth', UserRouter)
+app.use('/cart', CartRouter)
 
 //MIDDLEWARE
 
@@ -56,7 +58,7 @@ app.use(authMiddleware)
 //CORS
 
 
-app.enable
+//app.enable
 
 app.listen('9000')
 
