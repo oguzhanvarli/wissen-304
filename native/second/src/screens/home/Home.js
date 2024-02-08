@@ -4,7 +4,7 @@ import axios from 'axios'
 import { styles } from './home.style'
 import ProductCartComponent from '../../components/ProductCartComponent'
 import { useDispatch, useSelector } from 'react-redux'
-import { addToCart } from '../../store/features/cartSlice'
+import { addToCart, handleValue } from '../../store/features/cartSlice'
 
 
 const Home = ({ navigation }) => {
@@ -18,6 +18,7 @@ const Home = ({ navigation }) => {
 
   useEffect(() => {
     getProducts()
+    getValueCart()
   }, [])
 
   const goCategory = () => {
@@ -34,6 +35,15 @@ const Home = ({ navigation }) => {
     }
   }
 
+  const getValueCart = async() => {
+    try {
+      let value = await axios.get('/cart/cartNumber').then(res => res.data.number)
+      dispatch(handleValue(value))
+    } catch (error) {
+      console.log('Get Cart Value Error', error)
+    }
+  }
+
   const handleAddToCart = async (item) => {
     try {
       let cartObj = {
@@ -43,7 +53,6 @@ const Home = ({ navigation }) => {
         price: item.price,
         productId : item._id
       }
-      console.log(typeof(cartObj.quantity))
       let response = await axios.post('/cart/addToCart', cartObj)
       if (response.data.message) {
         dispatch(addToCart(item))

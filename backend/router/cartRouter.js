@@ -45,4 +45,13 @@ cartRouter.route('/deleteAll').get(async (req, res) => {
   }
 })
 
+cartRouter.route('/cartNumber').get(async(req,res) => {
+  try {
+    let carts = await Cart.find({})
+    res.status(200).json({number : carts.length, status: true})
+  } catch (error) {
+    res.status(500).json({ message: error.message, status: false })
+  }
+})
+
 module.exports = cartRouter
