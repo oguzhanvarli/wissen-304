@@ -16,6 +16,7 @@ const Cart = () => {
 
   const [products, setProducts] = useState([])
   const [totalPrice, setTotalPrice] = useState(0)
+  const [isChanged, setIsChanged] = useState(false)
 
   useEffect(() => {
     if (cart > 0) {
@@ -30,7 +31,26 @@ const Cart = () => {
       handleTotalPrice()
     }
   }, [products])
+
+  useEffect(() => {
+    return () => {
+      isChanged ? handleLeftCart() : null
+    }
+  }, [isChanged])
   
+  const handleLeftCart = async() => {
+    try {
+      console.log('worked')
+      let response = await axios.post('/cart/updateCart', products)
+      console.log(response.data)
+    } catch (error) {
+      console.log('Cart Update Error', error)
+    }
+  }
+
+  console.log(products)
+  
+
 
   const getCartValue = async () => {
     const products = await axios.get('/cart/getAll')
@@ -49,21 +69,27 @@ const Cart = () => {
     }
   }
 
-  const handleQuantity = (item) => {
+
+  const handleQuantity = (item, type) => {
     //item.quantity = item.quantity + 1
-    const newData = products.map((element) => element._id === item._id ? {...element, quantity : element.quantity + 1} : element)
-      // if(element._id === item._id){
-      //   element.quantity = element.quantity + 1
-      // }
-      // newArray.push(element)
-    
+    // if(element._id === item._id){
+    //   element.quantity = element.quantity + 1
+    // }
+    // newArray.push(element) 
+    let newData;
+    if (type === 'plus') {
+      newData = products.map((element) => element._id === item._id ? { ...element, quantity: element.quantity + 1 } : element)
+    } else if (type === 'minus') {
+      newData = products.map((element) => element._id === item._id ? { ...element, quantity: element.quantity - 1 } : element)
+    }
     setProducts(newData)
+    setIsChanged(true)
   }
 
   const handleTotalPrice = () => {
     let innerTotalPrice = 0
     products.forEach(element => {
-      innerTotalPrice = innerTotalPrice +  (element.quantity * element.price)
+      innerTotalPrice = innerTotalPrice + (element.quantity * element.price)
     });
     setTotalPrice(innerTotalPrice)
   }
@@ -81,9 +107,14 @@ const Cart = () => {
             <ListItem.Content>
               <ListItem.Title>{item.name}</ListItem.Title>
               <ListItem>
-                <Button title='-' onPress={null} style={styles.quantityButton} />
+                <Button
+                  title='-'
+                  onPress={() => handleQuantity(item, 'minus')}
+                  style={styles.quantityButton}
+                  disabled={item.quantity === 1 ? true : false }
+                />
                 <Text>{item.quantity} </Text>
-                <Button title='+' onPress={() => handleQuantity(item)} style={styles.quantityButton} />
+                <Button title='+' onPress={() => handleQuantity(item, 'plus')} style={styles.quantityButton} />
               </ListItem>
             </ListItem.Content>
 

@@ -1,5 +1,5 @@
 import { View, Text, Button } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Home from './src/screens/home/Home'
@@ -11,11 +11,22 @@ import { Provider } from 'react-redux'
 import { store } from './src/store/store'
 import Cart from './src/screens/cart/Cart'
 import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Stack = createNativeStackNavigator()
 
 const App = () => {
   axios.defaults.baseURL = 'http://localhost:9000'
+
+  useEffect(() => {
+   checkToken()
+  }, [])
+
+  const checkToken = async() => {
+    let token = await AsyncStorage.getItem('access-token')
+    console.log(token)
+  }
+  
   return (
     <Provider store={store}>
       <NavigationContainer>

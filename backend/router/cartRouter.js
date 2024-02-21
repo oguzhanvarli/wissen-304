@@ -48,7 +48,22 @@ cartRouter.route('/deleteAll').get(async (req, res) => {
 cartRouter.route('/cartNumber').get(async(req,res) => {
   try {
     let carts = await Cart.find({})
-    res.status(200).json({number : carts.length, status: true})
+    let totalQuantity = 0
+    carts.forEach(element => {
+      totalQuantity += element.quantity
+    });
+    res.status(200).json({number : totalQuantity, status: true})
+  } catch (error) {
+    res.status(500).json({ message: error.message, status: false })
+  }
+})
+
+cartRouter.route('/updateCart').post(async(req,res) => {
+  try {
+    await Cart.deleteMany({})
+    // await Cart.updateMany({}, {$set: {'data.'}})
+    const carts = await Cart.create(req.body)
+    res.status(200).json({carts: carts, status: true})
   } catch (error) {
     res.status(500).json({ message: error.message, status: false })
   }

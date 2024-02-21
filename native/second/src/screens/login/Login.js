@@ -1,19 +1,57 @@
 import { View, Text, TextInput, Button } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { styles } from './login.style'
 import axios from 'axios'
 import { Formik } from 'formik'
 import * as Yup from 'yup';
 import Toast from 'react-native-toast-message'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { jwtDecode } from 'jwt-decode'
+import { decode } from "base-64";
+global.atob = decode;
 
 const loginSchema = Yup.object().shape({
   email: Yup.string().required('Email is required!').email('Please enter a valid email address!'),
   password: Yup.string().required('Password is required!').min(6, 'Password must be min 6 character!')
 })
 
-const Login = ({navigation}) => {
+const Login = ({ navigation }) => {
   // const [email, setEmail] = useState()
   // const [password, setPassword] = useState()
+
+  useEffect(() => {
+    //sendLogin()
+    checkToken()
+  }, [])
+
+  const sendLogin = async () => {
+    let loginResponse = await fetch('https://dummyjson.com/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+
+        username: 'kminchelle',
+        password: '0lelplR',
+        // expiresInMins: 60, // optional
+      })
+    })
+      .then(res => res.json())
+      await AsyncStorage.setItem('dummy-token', loginResponse.token)
+  }
+
+  const checkToken = async() => {
+    let token = await AsyncStorage.getItem('dummy-token')
+    if(token){
+      let date = new Date()
+      let decoded = jwtDecode(token)
+      let nowDate = date.getTime() / 1000
+      if(decoded.exp > nowDate){
+        navigation.navigate('Home')
+      }else{
+        axios.post('/refresh-token')
+      }
+    }
+  }
 
 
   const handleLogin = async (values) => {
@@ -23,15 +61,17 @@ const Login = ({navigation}) => {
       //   password: password
       // }
       let loginResponse = await axios.post('/auth/login', values)
-      if(loginResponse.data?.token){
+      if (loginResponse.data?.token) {
         navigation.navigate('Home')
         Toast.show({
           type: 'success',
           text1: 'Welcome'
         })
+        await AsyncStorage.setItem('access-token', loginResponse.data.token)
       }
     } catch (error) {
-      if(error.response){
+      console.log(error)
+      if (error.response) {
         return Toast.show({
           type: 'error',
           text1: 'Error',
@@ -73,7 +113,7 @@ const Login = ({navigation}) => {
                 value={values.password}
                 style={styles.input}
                 secureTextEntry={true} />
-                {
+              {
                 errors.password && touched.password ?
                   <Text style={styles.error}>{errors.password}</Text> : null
               }

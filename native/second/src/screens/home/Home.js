@@ -38,6 +38,7 @@ const Home = ({ navigation }) => {
   const getValueCart = async() => {
     try {
       let value = await axios.get('/cart/cartNumber').then(res => res.data.number)
+      console.log(value)
       dispatch(handleValue(value))
     } catch (error) {
       console.log('Get Cart Value Error', error)
